@@ -356,7 +356,8 @@
               </p>
             </div>
 
-            <div class="u war locked" data-lock="war" role="button" tabindex="0" aria-label="War Universe locked">
+            <div class="u war locked" data-go="war" data-min-days="30" role="button" tabindex="0" aria-label="Enter War Universe">
+
               <span class="accentBar"></span>
               <div class="badge">Locked</div>
               <h3><span class="dot war"></span> War Universe</h3>
@@ -365,7 +366,8 @@
               </p>
             </div>
 
-            <div class="u ronin locked" data-lock="ronin" role="button" tabindex="0" aria-label="Ronin Universe locked">
+            <div class="u ronin locked" data-go="ronin" data-min-days="90" role="button" tabindex="0" aria-label="Enter Ronin Universe">
+
               <span class="accentBar"></span>
               <div class="badge">Locked</div>
               <h3><span class="dot ronin"></span> Ronin Universe</h3>
@@ -374,7 +376,8 @@
               </p>
             </div>
 
-            <div class="u elite locked" data-lock="elite" role="button" tabindex="0" aria-label="Elite Universe locked">
+            <div class="u elite locked" data-go="elite" data-min-days="180" role="button" tabindex="0" aria-label="Enter Elite Universe">
+
               <span class="accentBar"></span>
               <div class="badge">Locked</div>
               <h3><span class="dot elite"></span> Elite Universe</h3>
@@ -440,48 +443,101 @@
 
   <script>
     // Year
-    document.getElementById('y').textContent = new Date().getFullYear();
+document.getElementById('y').textContent = new Date().getFullYear();
 
-    const toast = document.getElementById('toast');
-    let toastTimer = null;
+const toast = document.getElementById('toast');
+let toastTimer = null;
 
-    function showToast(title, detail){
-      toast.innerHTML = `<div><strong>${title}</strong><br><small>${detail}</small></div>`;
-      toast.style.display = 'block';
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=> toast.style.display = 'none', 3200);
+function showToast(title, detail){
+  toast.innerHTML = `<div><strong>${title}</strong><br><small>${detail}</small></div>`;
+  toast.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> toast.style.display = 'none', 3200);
+}
+
+// === Shared Path state ===
+const LS_KEY = "ninjatoshi_demo_state_v1";
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return { connected:false, days:0 };
+    const s = JSON.parse(raw);
+    return { connected: !!s.connected, days: Number(s.days)||0 };
+  }catch{
+    return { connected:false, days:0 };
+  }
+}
+
+function applyUnlocks(){
+  const s = loadState();
+  const days = Math.max(0, Math.min(180, s.days||0));
+  const connected = !!s.connected;
+
+  document.querySelectorAll('.u[data-go]').forEach(card=>{
+    const go = card.getAttribute('data-go');
+    const min = Number(card.getAttribute('data-min-days') || "0");
+    const badge = card.querySelector('.badge');
+
+    if(go === "shadow"){
+      card.classList.remove('locked');
+      if(badge) badge.textContent = "Active";
+      return;
     }
 
-    // Card interactions
-    const cards = document.querySelectorAll('.u');
-    cards.forEach(card => {
-      const locked = card.classList.contains('locked');
-      const go = card.getAttribute('data-go');
-      const lockKey = card.getAttribute('data-lock');
+    const unlocked = connected && days >= min;
 
-      function activate(){
-        if (locked || lockKey){
-          showToast("Locked", "Unlocks later through the Path. Start in Shadow.");
-          return;
-        }
-        if (go === 'shadow'){
-          window.location.href = 'shadow.html';
-        }
-      }
+    if(unlocked){
+      card.classList.remove('locked');
+      if(badge) badge.textContent = "Active";
+      card.style.cursor = "pointer";
+    }else{
+      card.classList.add('locked');
+      if(badge) badge.textContent = "Locked";
+      card.style.cursor = "not-allowed";
+    }
+  });
+}
 
-      card.addEventListener('click', activate);
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') activate();
-      });
-    });
+function navigate(go){
+  if(go === 'shadow') window.location.href = 'shadow.html';
+  if(go === 'war') window.location.href = 'war.html';
+  if(go === 'ronin') window.location.href = 'ronin.html';
+  if(go === 'elite') window.location.href = 'elite.html';
+}
 
-    // Footer locked links
-    document.querySelectorAll('[data-lock]').forEach(el => {
-      el.addEventListener('click', (e)=>{
-        e.preventDefault();
-        showToast("Locked", "Unlocks later through the Path. Start in Shadow.");
-      });
-    });
+document.querySelectorAll('.u').forEach(card => {
+  const go = card.getAttribute('data-go');
+
+  function activate(){
+    if(!go){
+      showToast("Locked", "Unlocks later through the Path. Start in Shadow.");
+      return;
+    }
+
+    const min = Number(card.getAttribute('data-min-days') || "0");
+
+    if(card.classList.contains('locked')){
+      showToast("Locked", `Requires Day ${min} and a connected wallet.`);
+      return;
+    }
+
+    if(go === "ronin" || go === "elite"){
+      showToast("Coming soon", "This universe will open next.");
+      return;
+    }
+
+    navigate(go);
+  }
+
+  card.addEventListener('click', activate);
+  card.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' ') activate();
+  });
+});
+
+applyUnlocks();
+
   </script>
 </body>
 </html>
