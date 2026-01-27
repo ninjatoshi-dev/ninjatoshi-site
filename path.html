@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ninjatoshi — The Path</title>
+  <meta name="description" content="Track days maintained. Unlock War, Ronin and Elite." />
+
+  <style>
+    :root{
+      --bg:#070a10;
+      --panel:rgba(10,14,24,.62);
+      --panel2:rgba(255,255,255,.03);
+      --text:#e7e9ee;
+      --muted:#a6adbb;
+      --line:rgba(255,255,255,.10);
+      --shadowAccent:#6ea8ff;
+      --warAccent:#ff5a5f;
+      --roninAccent:#c084fc;
+      --eliteAccent:#e9eef7;
+      --shadow:rgba(0,0,0,.55);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif;
+      background:
+        radial-gradient(1200px 700px at 30% 10%, rgba(110,168,255,.12), transparent 60%),
+        radial-gradient(900px 520px at 85% 35%, rgba(255,90,95,.08), transparent 60%),
+        radial-gradient(900px 520px at 65% 120%, rgba(192,132,252,.07), transparent 60%),
+        linear-gradient(180deg, #05070d 0%, #070a10 50%, #05070d 100%);
+      overflow-x:hidden;
+    }
+    .grain{
+      pointer-events:none;
+      position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.20'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay;
+      opacity:.12;
+    }
+    .wrap{max-width:1060px;margin:0 auto;padding:34px 18px 64px;}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      padding:10px 0 22px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .brand{display:flex; gap:10px; align-items:center;}
+    .sigil{
+      width:34px;height:34px;border-radius:12px;
+      border:1px solid rgba(110,168,255,.35);
+      background:linear-gradient(180deg, rgba(110,168,255,.18), rgba(110,168,255,.06));
+      box-shadow:0 14px 40px rgba(0,0,0,.35);
+      display:grid; place-items:center;
+      font-weight:900; letter-spacing:.08em;
+    }
+    .title{
+      font-weight:900; letter-spacing:.18em; text-transform:uppercase;
+      font-size:12px; color:var(--muted);
+    }
+    a{color:var(--muted); text-decoration:none;}
+    a:hover{color:var(--text)}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.02em;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .btn:hover{transform:translateY(-1px); background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.16)}
+    .btn.primary{
+      border-color:rgba(110,168,255,.40);
+      background:linear-gradient(180deg, rgba(110,168,255,.18), rgba(110,168,255,.08));
+    }
+    .btn.danger{
+      border-color:rgba(255,90,95,.35);
+      background:linear-gradient(180deg, rgba(255,90,95,.14), rgba(255,90,95,.06));
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:16px;
+      margin-top:18px;
+      align-items:stretch;
+    }
+    @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+
+    .card{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      box-shadow:0 24px 70px var(--shadow);
+      position:relative;
+    }
+    .card:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:radial-gradient(700px 240px at 15% 0%, rgba(110,168,255,.16), transparent 55%);
+      pointer-events:none;
+    }
+    .pad{padding:16px;}
+    .kicker{
+      font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+      color:var(--muted);
+    }
+    h1{
+      margin:10px 0 8px;
+      font-size:26px;
+      line-height:1.12;
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.55;
+      max-width:70ch;
+    }
+
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.02);
+      color:var(--muted);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+    }
+    .dot{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.25)}
+    .dot.shadow{background:var(--shadowAccent)}
+    .dot.war{background:var(--warAccent)}
+    .dot.ronin{background:var(--roninAccent)}
+    .dot.elite{background:var(--eliteAccent)}
+
+    .progressWrap{margin-top:16px;}
+    .bar{
+      height:10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      overflow:hidden;
+    }
+    .fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(110,168,255,.55), rgba(192,132,252,.35));
+      transition:width .25s ease;
+    }
+    .meta{
+      margin-top:10px;
+      display:flex; justify-content:space-between; gap:10px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .box{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.02);
+      margin-top:12px;
+    }
+    .label{
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+    }
+    .value{
+      margin-top:8px;
+      font-size:16px;
+      font-weight:900;
+    }
+    .small{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .marks{
+      display:flex; flex-direction:column; gap:10px; margin-top:10px;
+    }
+    .mark{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:10px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px;
+      background:rgba(255,255,255,.02);
+    }
+    .mark strong{display:block; font-size:13px; letter-spacing:.06em; text-transform:uppercase;}
+    .mark span{display:block; color:var(--muted); font-size:13px; margin-top:6px; line-height:1.4;}
+    .chip{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      color:var(--muted);
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .chip.on{color:#dce7ff; border-color:rgba(110,168,255,.35); background:rgba(110,168,255,.10);}
+    .chip.war{border-color:rgba(255,90,95,.25)}
+    .chip.ronin{border-color:rgba(192,132,252,.25)}
+    .chip.elite{border-color:rgba(233,238,247,.25)}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(15,18,28,.92);
+      border:1px solid rgba(255,255,255,.12);
+      padding:10px 12px;
+      border-radius:12px;
+      color:var(--text);
+      font-size:13px;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      display:none;
+      max-width:min(620px, calc(100% - 28px));
+    }
+    .toast small{color:var(--muted)}
+    footer{
+      margin-top:22px;
+      padding-top:14px;
+      border-top:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grain"></div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="sigil">N</div>
+        <div>
+          <div class="title">The Path</div>
+          <div style="color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Ninjatoshi</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn" href="shadow.html">← Shadow</a>
+        <a class="btn" href="index.html">Portal</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT: PATH CORE -->
+      <section class="card">
+        <div class="pad">
+          <div class="kicker">Progress</div>
+          <h1>Days maintained. Not words spoken.</h1>
+          <p class="sub">
+            Maintain a dynamic threshold of <strong>$100</strong> worth of Ninjatoshi.
+            If your balance drops below the threshold at a daily check (UTC), your Path resets.
+          </p>
+
+          <div class="row" style="margin-top:14px;">
+            <div class="pill"><span class="dot shadow"></span> Shadow</div>
+            <div class="pill"><span class="dot war"></span> War</div>
+            <div class="pill"><span class="dot ronin"></span> Ronin</div>
+            <div class="pill"><span class="dot elite"></span> Elite</div>
+          </div>
+
+          <div class="progressWrap">
+            <div class="bar"><div class="fill" id="fill"></div></div>
+            <div class="meta">
+              <div><strong id="dayTxt">Day 0</strong> / 180</div>
+              <div>Stage: <strong id="stageTxt">Shadow</strong></div>
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="label">Wallet</div>
+            <div class="value" id="walletTxt">Not connected</div>
+            <div class="small" id="walletHelp">
+              Connect your wallet to begin tracking.
+              (Solana connection will be enabled next.)
+            </div>
+
+            <div class="row">
+              <button class="btn primary" id="connectBtn">Connect Wallet (demo)</button>
+              <button class="btn danger" id="resetBtn">Reset (demo)</button>
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="label">Requirement</div>
+            <div class="value">$100 maintained balance</div>
+            <div class="small">
+              Dynamic threshold: required token amount adapts to price.
+              Daily check time: <strong>00:00 UTC</strong> (MVP default).
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: WAR MARKS + UNLOCKS -->
+      <aside class="card">
+        <div class="pad">
+          <div class="kicker">War Universe</div>
+          <h1 style="margin-bottom:8px;">Endurance becomes a record.</h1>
+          <p class="sub">
+            War Marks are proof of volatility endured. They shape your Elite identity and relic metadata later.
+          </p>
+
+          <div class="box">
+            <div class="label">Unlocks</div>
+            <div class="value" id="unlockTxt">War unlocks at Day 30</div>
+            <div class="small">
+              Shadow: 0–29<br/>
+              War: 30–89<br/>
+              Ronin: 90–179<br/>
+              Elite: 180
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="label">War Marks</div>
+            <div class="value"><span id="marksCount">0</span> collected</div>
+
+            <div class="marks" id="marksList">
+              <!-- filled by JS -->
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="label">Note</div>
+            <div class="small">
+              This page is a functional skeleton. Next step: real Solana wallet connect + real on-chain tracking.
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <div>© <span id="y"></span> Ninjatoshi</div>
+      <div>Shadow → War → Ronin → Elite</div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // ===== Demo state (stored locally in browser) =====
+    const LS_KEY = "ninjatoshi_demo_state_v1";
+    const DEFAULT = { connected:false, wallet:"", days:0 };
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        if(!raw) return {...DEFAULT};
+        const parsed = JSON.parse(raw);
+        return { ...DEFAULT, ...parsed };
+      }catch{
+        return {...DEFAULT};
+      }
+    }
+    function saveState(s){
+      localStorage.setItem(LS_KEY, JSON.stringify(s));
+    }
+
+    function stageForDays(days){
+      if(days >= 180) return "Elite";
+      if(days >= 90) return "Ronin";
+      if(days >= 30) return "War";
+      return "Shadow";
+    }
+
+    function warMarksForDays(days){
+      // Marks are tied to milestones (demo): 30, 60, 90, 120, 150, 180
+      const milestones = [30, 60, 90, 120, 150, 180];
+      const names = [
+        { t:"⚔️ First Blood", d:"You entered the War (Day 30).", chip:"war" },
+        { t:"🔥 Veteran", d:"You stayed while others fled (Day 60).", chip:"war" },
+        { t:"🩸 Survivor", d:"Chaos became familiar (Day 90).", chip:"ronin" },
+        { t:"🕯️ Unbroken", d:"Silence after pressure (Day 120).", chip:"ronin" },
+        { t:"🗡️ Edgewalker", d:"You held through late-stage doubt (Day 150).", chip:"ronin" },
+        { t:"👑 Ascension", d:"Elite gate opens (Day 180).", chip:"elite" },
+      ];
+      const out = [];
+      for(let i=0;i<milestones.length;i++){
+        if(days >= milestones[i]) out.push(names[i]);
+      }
+      return out;
+    }
+
+    const toast = document.getElementById('toast');
+    let toastTimer = null;
+    function showToast(title, detail){
+      toast.innerHTML = `<div><strong>${title}</strong><br><small>${detail}</small></div>`;
+      toast.style.display = 'block';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> toast.style.display = 'none', 3200);
+    }
+
+    function render(){
+      const s = loadState();
+      const days = Math.max(0, Math.min(180, Number(s.days)||0));
+      const stage = stageForDays(days);
+
+      // Progress
+      document.getElementById('dayTxt').textContent = `Day ${days}`;
+      document.getElementById('stageTxt').textContent = stage;
+      document.getElementById('fill').style.width = `${(days/180)*100}%`;
+
+      // Wallet
+      const walletTxt = document.getElementById('walletTxt');
+      const help = document.getElementById('walletHelp');
+      if(s.connected){
+        walletTxt.textContent = s.wallet || "Connected";
+        help.innerHTML = `Demo mode: days can be incremented later by real on-chain checks.`;
+      }else{
+        walletTxt.textContent = "Not connected";
+        help.innerHTML = `Connect your wallet to begin tracking. (Solana connection will be enabled next.)`;
+      }
+
+      // Unlock text
+      const unlockTxt = document.getElementById('unlockTxt');
+      if(stage === "Shadow") unlockTxt.textContent = "War unlocks at Day 30";
+      if(stage === "War") unlockTxt.textContent = "You are in War. Earn War Marks by enduring.";
+      if(stage === "Ronin") unlockTxt.textContent = "You entered Ronin. The city sleeps — you remain awake.";
+      if(stage === "Elite") unlockTxt.textContent = "Elite unlocked. Relic claim will appear here later.";
+
+      // Marks
+      const marks = warMarksForDays(days);
+      document.getElementById('marksCount').textContent = String(marks.length);
+
+      const list = document.getElementById('marksList');
+      list.innerHTML = "";
+      if(marks.length === 0){
+        const el = document.createElement('div');
+        el.className = "mark";
+        el.innerHTML = `
+          <div>
+            <strong>—</strong>
+            <span>No marks yet. Endure until Day 30.</span>
+          </div>
+          <div class="chip">Locked</div>
+        `;
+        list.appendChild(el);
+      }else{
+        marks.forEach(m => {
+          const el = document.createElement('div');
+          el.className = "mark";
+          el.innerHTML = `
+            <div>
+              <strong>${m.t}</strong>
+              <span>${m.d}</span>
+            </div>
+            <div class="chip on ${m.chip}">Unlocked</div>
+          `;
+          list.appendChild(el);
+        });
+      }
+    }
+
+    // Buttons (demo)
+    document.getElementById('connectBtn').addEventListener('click', ()=>{
+      const s = loadState();
+      s.connected = true;
+      // fake wallet id for demo
+      if(!s.wallet) s.wallet = "DemoWallet…"+Math.floor(Math.random()*9000+1000);
+      saveState(s);
+      showToast("Connected (demo)", "Next step: real Phantom/Solflare connect.");
+      render();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', ()=>{
+      saveState({ connected:false, wallet:"", days:0 });
+      showToast("Reset (demo)", "Local progress cleared.");
+      render();
+    });
+
+    // Secret demo increment: press "+" key to add a day (for testing)
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === '+'){
+        const s = loadState();
+        if(!s.connected){
+          showToast("Connect first", "Demo requires a connected wallet.");
+          return;
+        }
+        s.days = Math.min(180, (Number(s.days)||0) + 1);
+        saveState(s);
+        showToast("Day advanced (demo)", `Now Day ${s.days}.`);
+        render();
+      }
+      if(e.key === '-'){
+        const s = loadState();
+        if(!s.connected) return;
+        s.days = Math.max(0, (Number(s.days)||0) - 1);
+        saveState(s);
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
