@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ninjatoshi — War Universe</title>
+  <meta name="description" content="War is pressure. Endurance becomes a record." />
+
+  <style>
+    :root{
+      --bg:#070a10;
+      --text:#e7e9ee;
+      --muted:#a6adbb;
+      --line:rgba(255,255,255,.10);
+      --shadow:rgba(0,0,0,.55);
+
+      --war:#ff5a5f;
+      --war2:rgba(255,90,95,.18);
+      --steel:rgba(255,255,255,.03);
+      --panel:rgba(12,10,12,.62);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif;
+      background:
+        radial-gradient(1200px 680px at 35% 10%, rgba(255,90,95,.16), transparent 60%),
+        radial-gradient(900px 520px at 85% 45%, rgba(255,90,95,.08), transparent 60%),
+        radial-gradient(900px 520px at 35% 120%, rgba(0,0,0,.65), transparent 60%),
+        linear-gradient(180deg, #05070d 0%, #070a10 50%, #05070d 100%);
+      overflow-x:hidden;
+    }
+    .grain{
+      pointer-events:none;
+      position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.20'/%3E%3C/svg%3E");
+      mix-blend-mode:overlay;
+      opacity:.12;
+    }
+
+    .wrap{max-width:1060px;margin:0 auto;padding:34px 18px 64px;}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      padding:10px 0 22px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .brand{display:flex; gap:10px; align-items:center;}
+    .sigil{
+      width:34px;height:34px;border-radius:12px;
+      border:1px solid rgba(255,90,95,.40);
+      background:linear-gradient(180deg, rgba(255,90,95,.18), rgba(255,90,95,.06));
+      box-shadow:0 14px 40px rgba(0,0,0,.35);
+      display:grid; place-items:center;
+      font-weight:900; letter-spacing:.08em;
+    }
+    .title{
+      font-weight:900; letter-spacing:.18em; text-transform:uppercase;
+      font-size:12px; color:var(--muted);
+    }
+    a{color:var(--muted); text-decoration:none;}
+    a:hover{color:var(--text)}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.02em;
+      transition:transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+    .btn:hover{transform:translateY(-1px); background:rgba(255,255,255,.05); border-color:rgba(255,255,255,.16)}
+    .btn.primary{
+      border-color:rgba(255,90,95,.40);
+      background:linear-gradient(180deg, rgba(255,90,95,.18), rgba(255,90,95,.08));
+    }
+
+    .hero{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      box-shadow:0 24px 70px var(--shadow);
+      position:relative;
+    }
+    .hero:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:radial-gradient(720px 260px at 18% 0%, rgba(255,90,95,.18), transparent 55%);
+      pointer-events:none;
+    }
+    .scene{
+      position:relative;
+      padding:18px;
+      min-height:300px;
+      display:grid;
+      align-items:end;
+      background:
+        radial-gradient(900px 280px at 15% 20%, rgba(255,90,95,.12), transparent 60%),
+        radial-gradient(900px 520px at 60% 120%, rgba(0,0,0,.65), transparent 65%),
+        linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.55));
+    }
+    .smoke{
+      position:absolute; inset:-50px;
+      background:
+        radial-gradient(closest-side at 20% 40%, rgba(255,255,255,.05), transparent 62%),
+        radial-gradient(closest-side at 70% 60%, rgba(255,90,95,.05), transparent 62%);
+      filter: blur(16px);
+      opacity:.8;
+      animation:smoke 7s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    @keyframes smoke{
+      from{transform:translateX(-10px) translateY(0px)}
+      to{transform:translateX(14px) translateY(-8px)}
+    }
+    .banner{
+      position:relative;
+      max-width:70ch;
+      backdrop-filter: blur(10px);
+      background:var(--panel);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:14px 14px 12px;
+    }
+    .kicker{
+      font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+      color:var(--muted);
+    }
+    h1{
+      margin:10px 0 8px;
+      font-size:30px;
+      line-height:1.12;
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.55;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:16px;
+      margin-top:16px;
+      align-items:stretch;
+    }
+    @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+
+    .card{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      box-shadow:0 24px 70px var(--shadow);
+      position:relative;
+    }
+    .card:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:radial-gradient(720px 240px at 15% 0%, rgba(255,90,95,.14), transparent 55%);
+      pointer-events:none;
+    }
+    .pad{padding:16px;}
+
+    .box{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      padding:14px;
+      background:rgba(255,255,255,.02);
+      margin-top:12px;
+    }
+    .label{
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+    }
+    .value{
+      margin-top:8px;
+      font-size:16px;
+      font-weight:900;
+    }
+    .small{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .progressWrap{margin-top:12px;}
+    .bar{
+      height:10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.03);
+      overflow:hidden;
+    }
+    .fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(255,90,95,.55), rgba(255,255,255,.10));
+      transition:width .25s ease;
+    }
+    .meta{
+      margin-top:10px;
+      display:flex; justify-content:space-between; gap:10px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .log{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+    }
+    .entry{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px;
+      background:rgba(255,255,255,.02);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .entry strong{
+      display:block;
+      font-size:13px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .entry span{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      margin-top:6px;
+      line-height:1.4;
+      max-width:60ch;
+    }
+    .chip{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      color:var(--muted);
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .chip.on{color:#ffe7e8; border-color:rgba(255,90,95,.35); background:rgba(255,90,95,.10);}
+    .chip.lock{color:var(--muted);}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(15,18,28,.92);
+      border:1px solid rgba(255,255,255,.12);
+      padding:10px 12px;
+      border-radius:12px;
+      color:var(--text);
+      font-size:13px;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      display:none;
+      max-width:min(620px, calc(100% - 28px));
+    }
+    .toast small{color:var(--muted)}
+    footer{
+      margin-top:22px;
+      padding-top:14px;
+      border-top:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grain"></div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="sigil">W</div>
+        <div>
+          <div class="title">War Universe</div>
+          <div style="color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase;">Ninjatoshi</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn" href="index.html">Portal</a>
+        <a class="btn" href="path.html">Path</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="scene">
+        <div class="smoke"></div>
+
+        <div class="banner">
+          <div class="kicker">Pressure</div>
+          <h1>War has begun.</h1>
+          <p class="sub">
+            Volatility is not an event — it is the test. <br/>
+            The market screams. You remain.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <!-- LEFT: WAR STATE + PROGRESS -->
+      <section class="card">
+        <div class="pad">
+          <div class="kicker">War State</div>
+          <h1 style="margin-bottom:8px;">Endurance, not action.</h1>
+          <p class="sub">
+            War unlocks at <strong>Day 30</strong>. If your Path breaks, War closes.
+          </p>
+
+          <div class="box">
+            <div class="label">Access</div>
+            <div class="value" id="accessTxt">Locked</div>
+            <div class="small" id="accessHelp">
+              Enter the Path and maintain <strong>$100</strong> to unlock War.
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="label">Your Progress</div>
+            <div class="value"><span id="dayTxt">Day 0</span> / 180</div>
+
+            <div class="progressWrap">
+              <div class="bar"><div class="fill" id="fill"></div></div>
+              <div class="meta">
+                <div>Status: <strong id="statusTxt">Shadow</strong></div>
+                <div>War Marks: <strong id="marksTxt">0</strong></div>
+              </div>
+            </div>
+
+            <div class="small" id="warLine">
+              Reach Day 30 to enter the War.
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="label">War Promise</div>
+            <div class="value">The path gets heavier.</div>
+            <div class="small">
+              You are not rewarded for noise. You are recognized for remaining.
+              The longer you endure, the deeper the mark.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: WAR LOG + MARKS -->
+      <aside class="card">
+        <div class="pad">
+          <div class="kicker">War Log</div>
+          <h1 style="margin-bottom:8px;">A record of staying.</h1>
+          <p class="sub">
+            This log is personal. Not price. Not predictions. Only endurance.
+          </p>
+
+          <div class="box">
+            <div class="label">Entries</div>
+            <div class="value" id="logTitle">Locked</div>
+
+            <div class="log" id="logList">
+              <!-- filled by JS -->
+            </div>
+          </div>
+
+          <div class="box">
+            <div class="label">War Marks</div>
+            <div class="small">
+              Marks appear on milestones: Day 30, 60, 90, 120, 150, 180. <br/>
+              They shape your Elite identity later.
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <div>© <span id="y"></span> Ninjatoshi</div>
+      <div>Pressure reveals discipline.</div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Shared demo state with path.html
+    const LS_KEY = "ninjatoshi_demo_state_v1";
+    const DEFAULT = { connected:false, wallet:"", days:0 };
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        if(!raw) return {...DEFAULT};
+        const parsed = JSON.parse(raw);
+        return { ...DEFAULT, ...parsed };
+      }catch{
+        return {...DEFAULT};
+      }
+    }
+
+    function stageForDays(days){
+      if(days >= 180) return "Elite";
+      if(days >= 90) return "Ronin";
+      if(days >= 30) return "War";
+      return "Shadow";
+    }
+
+    function warMarksCount(days){
+      const milestones = [30,60,90,120,150,180];
+      return milestones.filter(m => days >= m).length;
+    }
+
+    function warLogEntries(days){
+      // Simple narrative log (demo). Later this can be real on-chain / daily check history.
+      const entries = [];
+      if(days < 30) return entries;
+
+      const inWarDays = Math.max(0, days - 30);
+      entries.push({
+        t: "⚔️ War Entry",
+        d: "You crossed Day 30. The pressure begins.",
+        on:true
+      });
+
+      if(days >= 60) entries.push({
+        t: "🔥 Veteran",
+        d: "You remained through extended volatility. Discipline hardened.",
+        on:true
+      });
+
+      if(days >= 90) entries.push({
+        t: "🩸 Survivor",
+        d: "War ends. Ronin begins. The mind stays awake.",
+        on:true
+      });
+
+      // A dynamic “current” entry
+      entries.push({
+        t: "— Current",
+        d: `You have endured ${inWarDays} day(s) since entering War.`,
+        on:true
+      });
+
+      return entries;
+    }
+
+    const toast = document.getElementById('toast');
+    let toastTimer = null;
+    function showToast(title, detail){
+      toast.innerHTML = `<div><strong>${title}</strong><br><small>${detail}</small></div>`;
+      toast.style.display = 'block';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=> toast.style.display = 'none', 3200);
+    }
+
+    function render(){
+      const s = loadState();
+      const days = Math.max(0, Math.min(180, Number(s.days)||0));
+      const stage = stageForDays(days);
+
+      // Basic
+      document.getElementById('dayTxt').textContent = `Day ${days}`;
+      document.getElementById('statusTxt').textContent = stage;
+      document.getElementById('marksTxt').textContent = String(warMarksCount(days));
+      document.getElementById('fill').style.width = `${(days/180)*100}%`;
+
+      // Access
+      const accessTxt = document.getElementById('accessTxt');
+      const accessHelp = document.getElementById('accessHelp');
+      const warLine = document.getElementById('warLine');
+
+      const hasAccess = days >= 30;
+
+      if(!s.connected){
+        accessTxt.textContent = "Locked (wallet not connected)";
+        accessHelp.innerHTML = `Connect your wallet in <a href="path.html">Path</a> to begin tracking.`;
+        warLine.textContent = "War requires an active Path.";
+      } else if(!hasAccess){
+        accessTxt.textContent = "Locked";
+        accessHelp.innerHTML = `War unlocks at <strong>Day 30</strong>. You are currently Day ${days}.`;
+        warLine.textContent = "Reach Day 30 to enter the War.";
+      } else {
+        accessTxt.textContent = "Unlocked";
+        accessHelp.innerHTML = `You are in War. Endure. Collect marks.`;
+        if(days < 90) {
+          warLine.textContent = "The war tests impulse. Remain steady.";
+        } else if(days < 180) {
+          warLine.textContent = "War is behind you. Ronin approaches.";
+        } else {
+          warLine.textContent = "Elite unlocked. The record is complete.";
+        }
+      }
+
+      // War Log
+      const logTitle = document.getElementById('logTitle');
+      const logList = document.getElementById('logList');
+      logList.innerHTML = "";
+
+      if(!s.connected || days < 30){
+        logTitle.textContent = "Locked";
+        const el = document.createElement('div');
+        el.className = "entry";
+        el.innerHTML = `
+          <div>
+            <strong>—</strong>
+            <span>Unlock War (Day 30) to reveal your log.</span>
+          </div>
+          <div class="chip lock">Locked</div>
+        `;
+        logList.appendChild(el);
+      } else {
+        logTitle.textContent = "Active";
+        const entries = warLogEntries(days);
+        entries.forEach(e => {
+          const el = document.createElement('div');
+          el.className = "entry";
+          el.innerHTML = `
+            <div>
+              <strong>${e.t}</strong>
+              <span>${e.d}</span>
+            </div>
+            <div class="chip on">Recorded</div>
+          `;
+          logList.appendChild(el);
+        });
+      }
+    }
+
+    // Helpful: if user clicks War while locked, show toast (optional)
+    // (No buttons needed; War is informational.)
+
+    render();
+  </script>
+</body>
+</html>
