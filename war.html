@@ -321,12 +321,13 @@
             The market screams. You remain.
           </p>
           <div class="audio-toggle" style="margin-top:24px;">
-  <button class="btn" id="audioToggle">
-    🔈 Ambient OFF
-  </button>
+<button class="btn" id="audioToggle" onclick="toggleWarAudio()">
+  🔈 Ambient OFF
+</button>
 
-  <audio id="warAudio" loop>
-    <source src="audio/war-ambient.mp3" type="audio/mpeg">
+
+ <audio id="warAudio" loop preload="auto">
+  <source src="audio/war-ambient.mp3" type="audio/mpeg">
   </audio>
 </div>
 
@@ -568,6 +569,29 @@
     // (No buttons needed; War is informational.)
 
     render();
+      const warAudio = document.getElementById("warAudio");
+const audioBtn = document.getElementById("audioToggle");
+
+let warSoundOn = false;
+
+function toggleWarAudio() {
+  if (!warSoundOn) {
+    warAudio.volume = 0.3;
+    warAudio.play().catch(err => {
+  console.log("Audio play blocked:", err);
+  alert("Браузер заблокировал звук. Нажми кнопку ещё раз или включи звук на устройстве.");
+});
+
+    audioBtn.textContent = "🔇 Ambient ON";
+    warSoundOn = true;
+  } else {
+    warAudio.pause();
+    audioBtn.textContent = "🔈 Ambient OFF";
+    warSoundOn = false;
+  }
+}
   </script>
+
+
 </body>
 </html>
