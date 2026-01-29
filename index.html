@@ -29,7 +29,34 @@
     a{color:inherit;text-decoration:none}
 
     /* ===== BACKGROUND (фон №2) ===== */
-    .bg{
+    /* ===== BACKGROUND LAYERS ===== */
+
+/* Атмосфера — размытый фон */
+.bg-atmosphere{
+  position: fixed;
+  inset: 0;
+  background-image: url("assets/home-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  filter: blur(18px) brightness(0.6);
+  transform: scale(1.05);
+  z-index: -3;
+}
+
+/* Чёткое изображение целиком */
+.bg-art{
+  position: fixed;
+  inset: 0;
+  background-image: url("assets/home-bg.jpg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  z-index: -2;
+}
+
       position: fixed;
       inset: 0;
       background-image: url("assets/home-bg.jpg");
@@ -217,8 +244,9 @@
 </head>
 
 <body>
-  <div class="bg"></div>
-  <div class="overlay"></div>
+  <div class="bg-atmosphere"></div>
+<div class="bg-art"></div>
+ <div class="overlay"></div>
   <div class="grain"></div>
 
   <div class="app">
