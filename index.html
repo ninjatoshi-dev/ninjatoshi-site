@@ -17,70 +17,47 @@
       --roninAccent:#b079ff;
       --eliteAccent:#ffffff;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
-      overflow: hidden;
+      overflow:hidden;
       background:#05080b;
     }
     a{color:inherit;text-decoration:none}
 
-    /* ===== BACKGROUND LAYERS ===== */
-
+    /* Background layers */
     .bg-atmosphere{
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image: url("assets/home-bg.jpg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      position: fixed; inset: 0; pointer-events:none;
+      background:url("assets/home-bg.jpg") center/cover no-repeat;
       filter: blur(18px) brightness(0.6);
       transform: scale(1.05);
       z-index: -4;
     }
-
     .bg-art{
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image: url("assets/home-bg.jpg");
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-
-      /* ВАЖНО: если не хочешь никакой обрезки — оставь scale(1.00) */
+      position: fixed; inset: 0; pointer-events:none;
+      background:url("assets/home-bg.jpg") center/contain no-repeat;
       transform: scale(1.00);
       filter: drop-shadow(0 20px 60px rgba(0,0,0,.55));
       z-index: -3;
     }
-
     .overlay{
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
+      position: fixed; inset: 0; pointer-events:none;
       background:
         radial-gradient(900px 520px at 30% 15%, rgba(0,0,0,.18), transparent 60%),
         radial-gradient(900px 520px at 80% 70%, rgba(0,0,0,.45), transparent 60%),
         linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.60));
       z-index: -2;
     }
-
     .grain{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
+      position:fixed; inset:0; pointer-events:none;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.20'/%3E%3C/svg%3E");
-      opacity:.10;
-      mix-blend-mode:overlay;
+      opacity:.10; mix-blend-mode:overlay;
       z-index:-1;
     }
 
-    /* ===== GLASS (стеклянная подложка для читаемости) ===== */
     .glass{
       background: rgba(0,0,0,.28);
       border: 1px solid rgba(255,255,255,.10);
@@ -91,7 +68,6 @@
       box-shadow: 0 0 30px rgba(0,0,0,0.35);
     }
 
-    /* ===== LAYOUT ===== */
     .app{
       min-height:100%;
       max-width:1200px;
@@ -102,7 +78,6 @@
       gap:18px;
     }
 
-    /* ===== HEADER ===== */
     header{
       display:flex;
       align-items:flex-start;
@@ -127,7 +102,6 @@
       text-shadow: 0 1px 6px rgba(0,0,0,.8);
     }
 
-    /* ===== PROFILE ===== */
     .profile{
       display:flex;
       align-items:center;
@@ -168,14 +142,8 @@
       background:rgba(106,166,255,.14);
     }
 
-    /* ===== MAIN ===== */
-    main{
-      flex:1;
-      display:grid;
-      place-items:center;
-    }
+    main{flex:1; display:grid; place-items:center;}
 
-    /* ===== PORTALS ===== */
     .grid{
       width:min(980px, 100%);
       display:grid;
@@ -195,11 +163,7 @@
       transition:transform .12s ease, border-color .12s ease;
     }
     .portal:hover{transform:translateY(-2px); border-color:rgba(255,255,255,.20)}
-    .glow{
-      position:absolute; inset:-2px;
-      pointer-events:none;
-      opacity:.9;
-    }
+    .glow{position:absolute; inset:-2px; pointer-events:none; opacity:.9;}
     .ptop{display:flex;align-items:center;justify-content:space-between;gap:10px}
     .pname{font-weight:1000;letter-spacing:.12em;text-transform:uppercase}
     .pill{
@@ -211,17 +175,9 @@
       background:rgba(0,0,0,.22);
       white-space:nowrap;
     }
-    .pdesc{
-      margin-top:10px;
-      color:rgba(255,255,255,.78);
-      line-height:1.45;
-      text-shadow: 0 1px 6px rgba(0,0,0,.8);
-    }
+    .pdesc{margin-top:10px;color:rgba(255,255,255,.78);line-height:1.45;text-shadow:0 1px 6px rgba(0,0,0,.8);}
 
-    .locked{
-      opacity:.58;
-      pointer-events:none;
-    }
+    .locked{opacity:.58; pointer-events:none;}
     .locked:after{
       content:"Locked";
       position:absolute;
@@ -234,7 +190,6 @@
       background:rgba(0,0,0,.22);
     }
 
-    /* ===== FOOTER ===== */
     footer{
       display:flex;
       justify-content:space-between;
@@ -252,7 +207,6 @@
 </head>
 
 <body>
-  <!-- Background -->
   <div class="bg-atmosphere"></div>
   <div class="bg-art"></div>
   <div class="overlay"></div>
@@ -277,13 +231,12 @@
 
     <main>
       <section id="portals" class="grid" aria-label="Universes">
-
-        <!-- ✅ SHADOW: СРАЗУ НА КОНКРЕТИКУ (path.html), НИКАКИХ shadow.html -->
+        <!-- Shadow ведёт в path.html (Shadow Universe) -->
         <a class="portal" href="path.html" id="shadowCard">
           <div class="glow" style="background:radial-gradient(500px 220px at 15% 10%, rgba(106,166,255,.22), transparent 55%);"></div>
           <div class="ptop">
             <div class="pname">Shadow</div>
-            <div class="pill">Enter</div>
+            <div class="pill">Active</div>
           </div>
           <div class="pdesc">Silence, observation, discipline.</div>
         </a>
@@ -297,7 +250,7 @@
           <div class="pdesc">Volatility and pressure. Marks are recorded.</div>
         </a>
 
-        <a class="portal locked" href="path.html" id="roninCard">
+        <a class="portal locked" href="ronin.html" id="roninCard">
           <div class="glow" style="background:radial-gradient(500px 220px at 15% 10%, rgba(176,121,255,.18), transparent 55%);"></div>
           <div class="ptop">
             <div class="pname">Ronin</div>
@@ -314,7 +267,6 @@
           </div>
           <div class="pdesc">The gate opens. Your relic becomes claimable.</div>
         </a>
-
       </section>
     </main>
 
@@ -327,11 +279,9 @@
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
 
-    // Day (demo)
     const day = Number(localStorage.getItem("dayCount") || 1);
     document.getElementById("dayCount").textContent = day;
 
-    // Demo wallet connect
     const walletStatus = document.getElementById("walletStatus");
     const connectBtn = document.getElementById("connectBtn");
 
@@ -351,7 +301,6 @@
         connectBtn.style.cursor = "pointer";
       }
     }
-
     connectBtn.addEventListener("click", () => {
       localStorage.setItem("walletConnected", "true");
       renderWallet();
