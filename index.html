@@ -24,70 +24,73 @@
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
-      overflow-x:hidden;
+      overflow: hidden; /* ✅ важно: без лишних скроллов */
+      background:#05080b;
     }
     a{color:inherit;text-decoration:none}
 
-    /* ===== BACKGROUND (фон №2) ===== */
     /* ===== BACKGROUND LAYERS ===== */
 
-/* Атмосфера — размытый фон */
-.bg-atmosphere{
-  position: fixed;
-  inset: 0;
-  background-image: url("assets/home-bg.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  filter: blur(18px) brightness(0.6);
-  transform: scale(1.05);
-  z-index: -3;
-}
-
-/* Чёткое изображение целиком */
-.bg-art{
-  position: fixed;
-  inset: 0;
-  background-image: url("assets/home-bg.jpg");
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-
-  z-index: -2;
-}
-
+    /* Атмосфера — размытый слой (всегда заполняет экран) */
+    .bg-atmosphere{
       position: fixed;
       inset: 0;
+      pointer-events: none;
       background-image: url("assets/home-bg.jpg");
       background-size: cover;
-      background-position: center top;
+      background-position: center;
       background-repeat: no-repeat;
+      filter: blur(18px) brightness(0.6);
+      transform: scale(1.05);
+      z-index: -4;
+    }
 
-      transform: scale(1.03);
-      animation: bgMove 22s ease-in-out infinite alternate;
-
-      filter: saturate(1.05) contrast(1.02);
+    /* Чёткое изображение целиком (без обрезки) */
+    .bg-art{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: url("assets/home-bg.jpg");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform: scale(1.06);
+      filter: drop-shadow(0 20px 60px rgba(0,0,0,.55));
       z-index: -3;
     }
-    @keyframes bgMove{
-      from{ transform: scale(1.03) translateY(0px) }
-      to{ transform: scale(1.06) translateY(-14px) }
-    }
+
+    /* Атмосферные затемнения поверх арта */
     .overlay{
       position: fixed;
       inset: 0;
+      pointer-events: none;
       background:
         radial-gradient(900px 520px at 30% 15%, rgba(0,0,0,.18), transparent 60%),
         radial-gradient(900px 520px at 80% 70%, rgba(0,0,0,.45), transparent 60%),
         linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.60));
       z-index: -2;
     }
+
+    /* Шум */
     .grain{
-      position:fixed; inset:0; pointer-events:none;
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.20'/%3E%3C/svg%3E");
-      opacity:.10; mix-blend-mode:overlay;
+      opacity:.10;
+      mix-blend-mode:overlay;
       z-index:-1;
+    }
+
+    /* ===== GLASS (стеклянная подложка для читаемости) ===== */
+    .glass{
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 10px 12px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(0,0,0,0.35);
     }
 
     /* ===== LAYOUT ===== */
@@ -123,6 +126,7 @@
       text-transform:none;
       max-width:60ch;
       line-height:1.35;
+      text-shadow: 0 1px 6px rgba(0,0,0,.8);
     }
 
     /* ===== PROFILE ===== */
@@ -135,6 +139,8 @@
       border-radius:16px;
       background:rgba(0,0,0,.28);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(0,0,0,0.35);
     }
     .avatar{
       width:34px; height:34px;
@@ -186,6 +192,7 @@
       min-height:175px;
       background:rgba(0,0,0,.26);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       overflow:hidden;
       transition:transform .12s ease, border-color .12s ease;
     }
@@ -206,7 +213,12 @@
       background:rgba(0,0,0,.22);
       white-space:nowrap;
     }
-    .pdesc{margin-top:10px;color:rgba(255,255,255,.78);line-height:1.45}
+    .pdesc{
+      margin-top:10px;
+      color:rgba(255,255,255,.78);
+      line-height:1.45;
+      text-shadow: 0 1px 6px rgba(0,0,0,.8);
+    }
 
     .locked{
       opacity:.58;
@@ -232,8 +244,6 @@
       flex-wrap:wrap;
       color:var(--muted);
       font-size:12px;
-      border-top:1px solid rgba(255,255,255,.10);
-      padding-top:14px;
     }
 
     @media (max-width:760px){
@@ -244,14 +254,16 @@
 </head>
 
 <body>
+  <!-- Фон -->
   <div class="bg-atmosphere"></div>
-<div class="bg-art"></div>
- <div class="overlay"></div>
+  <div class="bg-art"></div>
+  <div class="overlay"></div>
   <div class="grain"></div>
 
+  <!-- UI -->
   <div class="app">
     <header>
-      <div class="brand">
+      <div class="brand glass">
         NINJATOSHI
         <small>Start in Shadow. War unlocks on Day 30.</small>
       </div>
@@ -304,13 +316,9 @@
           <div class="pdesc">The gate opens. Your relic becomes claimable.</div>
         </a>
       </section>
-
-      <!-- ✅ сюда потом можно добавлять новые блоки -->
-      <!-- <section id="tokenomics"></section> -->
-      <!-- <section id="marks"></section> -->
     </main>
 
-    <footer>
+    <footer class="glass">
       <div>Four universes. One discipline.</div>
       <div>© <span id="y"></span> Ninjatoshi</div>
     </footer>
