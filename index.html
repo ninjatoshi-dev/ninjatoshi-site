@@ -24,14 +24,13 @@
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--text);
-      overflow: hidden; /* ✅ важно: без лишних скроллов */
+      overflow: hidden;
       background:#05080b;
     }
     a{color:inherit;text-decoration:none}
 
     /* ===== BACKGROUND LAYERS ===== */
 
-    /* Атмосфера — размытый слой (всегда заполняет экран) */
     .bg-atmosphere{
       position: fixed;
       inset: 0;
@@ -45,7 +44,6 @@
       z-index: -4;
     }
 
-    /* Чёткое изображение целиком (без обрезки) */
     .bg-art{
       position: fixed;
       inset: 0;
@@ -54,12 +52,13 @@
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
-      transform: scale(1.25);
+
+      /* ВАЖНО: если не хочешь никакой обрезки — оставь scale(1.00) */
+      transform: scale(1.00);
       filter: drop-shadow(0 20px 60px rgba(0,0,0,.55));
       z-index: -3;
     }
 
-    /* Атмосферные затемнения поверх арта */
     .overlay{
       position: fixed;
       inset: 0;
@@ -71,11 +70,10 @@
       z-index: -2;
     }
 
-    /* Шум */
     .grain{
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
+      position:fixed;
+      inset:0;
+      pointer-events:none;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.20'/%3E%3C/svg%3E");
       opacity:.10;
       mix-blend-mode:overlay;
@@ -178,197 +176,4 @@
     }
 
     /* ===== PORTALS ===== */
-    .grid{
-      width:min(980px, 100%);
-      display:grid;
-      grid-template-columns:repeat(2, minmax(240px, 1fr));
-      gap:16px;
-    }
-    .portal{
-      position:relative;
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:18px;
-      min-height:175px;
-      background:rgba(0,0,0,.26);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      overflow:hidden;
-      transition:transform .12s ease, border-color .12s ease;
-    }
-    .portal:hover{transform:translateY(-2px); border-color:rgba(255,255,255,.20)}
-    .glow{
-      position:absolute; inset:-2px;
-      pointer-events:none;
-      opacity:.9;
-    }
-    .ptop{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .pname{font-weight:1000;letter-spacing:.12em;text-transform:uppercase}
-    .pill{
-      font-size:12px;
-      color:var(--muted);
-      border:1px solid var(--line);
-      border-radius:999px;
-      padding:6px 10px;
-      background:rgba(0,0,0,.22);
-      white-space:nowrap;
-    }
-    .pdesc{
-      margin-top:10px;
-      color:rgba(255,255,255,.78);
-      line-height:1.45;
-      text-shadow: 0 1px 6px rgba(0,0,0,.8);
-    }
-
-    .locked{
-      opacity:.58;
-      pointer-events:none;
-    }
-    .locked:after{
-      content:"Locked";
-      position:absolute;
-      right:14px; bottom:14px;
-      font-size:12px;
-      color:rgba(255,255,255,.60);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:999px;
-      padding:6px 10px;
-      background:rgba(0,0,0,.22);
-    }
-
-    /* ===== FOOTER ===== */
-    footer{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    @media (max-width:760px){
-      .grid{grid-template-columns:1fr}
-      .profile{flex-wrap:wrap; justify-content:flex-end}
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Фон -->
-  <div class="bg-atmosphere"></div>
-  <div class="bg-art"></div>
-  <div class="overlay"></div>
-  <div class="grain"></div>
-
-  <!-- UI -->
-  <div class="app">
-    <header>
-      <div class="brand glass">
-        NINJATOSHI
-        <small>Start in Shadow. War unlocks on Day 30.</small>
-      </div>
-
-      <div class="profile" aria-label="Holder profile">
-        <div class="avatar">N</div>
-        <div class="pmeta">
-          <div class="line1" id="walletStatus">Not connected</div>
-          <div class="line2">Day <span id="dayCount">1</span> / 180</div>
-        </div>
-        <button class="btn primary" id="connectBtn">Connect wallet</button>
-      </div>
-    </header>
-
-    <main>
-      <section id="portals" class="grid" aria-label="Universes">
-        <a class="portal" href="shadow.html" id="shadowCard">
-          <div class="glow" style="background:radial-gradient(500px 220px at 15% 10%, rgba(106,166,255,.22), transparent 55%);"></div>
-          <div class="ptop">
-            <div class="pname">Shadow</div>
-            <div class="pill">Active</div>
-          </div>
-          <div class="pdesc">Silence, observation, discipline.</div>
-        </a>
-
-        <a class="portal locked" href="war.html" id="warCard">
-          <div class="glow" style="background:radial-gradient(500px 220px at 15% 10%, rgba(255,90,95,.18), transparent 55%);"></div>
-          <div class="ptop">
-            <div class="pname">War</div>
-            <div class="pill">Day 30</div>
-          </div>
-          <div class="pdesc">Volatility and pressure. Marks are recorded.</div>
-        </a>
-
-        <a class="portal locked" href="path.html" id="roninCard">
-          <div class="glow" style="background:radial-gradient(500px 220px at 15% 10%, rgba(176,121,255,.18), transparent 55%);"></div>
-          <div class="ptop">
-            <div class="pname">Ronin</div>
-            <div class="pill">Day 90</div>
-          </div>
-          <div class="pdesc">Calm after chaos. The mind stays awake.</div>
-        </a>
-
-        <a class="portal locked" href="elite.html" id="eliteCard">
-          <div class="glow" style="background:radial-gradient(500px 220px at 15% 10%, rgba(255,255,255,.12), transparent 55%);"></div>
-          <div class="ptop">
-            <div class="pname">Elite</div>
-            <div class="pill">Day 180</div>
-          </div>
-          <div class="pdesc">The gate opens. Your relic becomes claimable.</div>
-        </a>
-      </section>
-    </main>
-
-    <footer class="glass">
-      <div>Four universes. One discipline.</div>
-      <div>© <span id="y"></span> Ninjatoshi</div>
-    </footer>
-  </div>
-
-  <script>
-    document.getElementById("y").textContent = new Date().getFullYear();
-
-    // Day (demo)
-    const day = Number(localStorage.getItem("dayCount") || 1);
-    document.getElementById("dayCount").textContent = day;
-
-    // Demo wallet connect
-    const walletStatus = document.getElementById("walletStatus");
-    const connectBtn = document.getElementById("connectBtn");
-
-    function renderWallet(){
-      const connected = localStorage.getItem("walletConnected") === "true";
-      if(connected){
-        walletStatus.textContent = "Holder connected";
-        connectBtn.textContent = "Connected";
-        connectBtn.disabled = true;
-        connectBtn.style.opacity = "0.7";
-        connectBtn.style.cursor = "default";
-      } else {
-        walletStatus.textContent = "Not connected";
-        connectBtn.textContent = "Connect wallet";
-        connectBtn.disabled = false;
-        connectBtn.style.opacity = "1";
-        connectBtn.style.cursor = "pointer";
-      }
-    }
-
-    connectBtn.addEventListener("click", () => {
-      localStorage.setItem("walletConnected", "true");
-      renderWallet();
-    });
-    renderWallet();
-
-    // Unlock by day
-    function unlock(id){
-      const el = document.getElementById(id);
-      if(!el) return;
-      el.classList.remove("locked");
-      el.style.pointerEvents = "auto";
-      el.style.opacity = "1";
-    }
-    if(day >= 30) unlock("warCard");
-    if(day >= 90) unlock("roninCard");
-    if(day >= 180) unlock("eliteCard");
-  </script>
-</body>
-</html>
+    .gri
